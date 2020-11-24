@@ -1,0 +1,113 @@
+1
+500
+110
+Allocate 6
+Free 2
+Free 9
+Free 7
+Free 2
+Allocate 5
+Allocate 6
+Defragment
+Allocate 7
+Allocate 7
+Free 3
+Allocate 1
+Allocate 5
+Free 5
+Free 8
+Allocate 8
+Free 8
+Allocate 8
+Defragment
+Allocate 3
+Free 3
+Allocate 0
+Allocate 0
+Allocate 1
+Free 9
+Allocate 7
+Allocate 2
+Allocate 0
+Free 6
+Defragment
+Allocate 0
+Free 9
+Allocate 0
+Allocate 2
+Free 4
+Free 7
+Free 4
+Allocate 8
+Free 5
+Free 1
+Defragment
+Free 4
+Free 3
+Free 7
+Free 7
+Free 9
+Allocate 4
+Allocate 6
+Free 0
+Free 3
+Allocate 1
+Defragment
+Allocate 0
+Allocate 6
+Allocate 3
+Free 9
+Free 3
+Free 4
+Free 0
+Allocate 6
+Free 3
+Allocate 1
+Defragment
+Free 5
+Allocate 2
+Free 1
+Allocate 8
+Free 5
+Free 9
+Allocate 0
+Free 5
+Allocate 8
+Allocate 4
+Defragment
+Allocate 4
+Free 4
+Free 9
+Free 6
+Allocate 1
+Allocate 5
+Allocate 3
+Free 7
+Free 5
+Allocate 7
+Defragment
+Free 2
+Allocate 8
+Allocate 9
+Free 0
+Allocate 6
+Free 5
+Free 1
+Allocate 9
+Free 5
+Free 0
+Defragment
+Free 2
+Free 2
+Free 7
+Free 8
+Allocate 2
+Free 5
+Free 5
+Allocate 2
+Allocate 5
+Allocate 8
+Defragment
+Free 3
+Free 0
+Free 3

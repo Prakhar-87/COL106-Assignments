@@ -1,0 +1,13 @@
+1
+100
+10
+Allocate 10
+Free 0
+Defragment
+Allocate 10
+Allocate 20
+Free 10
+Free 0
+Defragment
+Allocate 90
+Allocate 5
