@@ -18,6 +18,15 @@ public class BSTree extends Tree {
         super(address, size, key); 
     }
 
+    // for checksanity
+    // class Type{
+    //     int key,address;
+    // }
+    // private void addedge(ArrayList<Type> adj[], Type u, Type v){
+    //     adj[u].add(v);
+    //     adj[v].add(u);
+    // }
+
     private Boolean compare(BSTree a, BSTree b){
         if(a.key>b.key || (a.key==b.key && a.address>b.address))return true;
         return false;
@@ -59,6 +68,132 @@ public class BSTree extends Tree {
         while(temp.parent!=null)temp = temp.parent;
         if(temp.right==null)return false;
         temp = temp.right;
+
+        if(this.parent!=null && this.address==z.address && this.size==z.size && this.key==z.key && (this.left==null || this.right==null)){            
+            this.address = this.parent.address;
+            this.key = this.parent.key;
+            this.size = this.parent.size;
+            if(this.left==null && this.right==null){
+                // we have to delete the root element and it is the only element
+                if(this.parent.parent==null){                    
+                    this.parent.right = null;
+                    this.parent = null;
+                    return true;
+                }
+                // it is a leaf node and my tree contains more than 1 element
+                else{
+                    BSTree par = this.parent;
+                    BSTree gr = par.parent;
+                    //this is a right child
+                    if(par.right==this){                        
+                        BSTree left_child = par.left;
+                        // par is a right child
+                        if(gr.right==par)gr.right = this;
+                        // par is a left child
+                        else gr.left = this;
+                        this.parent = gr;
+                        this.left = left_child;
+                        if(left_child!=null)left_child.parent=this;
+                        par = null;
+                        return true;                                                    
+                    }
+                    // this is a left child
+                    else{
+                        BSTree right_child = par.right;
+                        // par is a right child
+                        if(gr.right==par)gr.right = this;
+                        // par is a left child
+                        else gr.left = this;
+                        this.parent = gr;
+                        this.right = right_child;
+                        if(right_child!=null)right_child.parent = this;
+                        par = null;
+                        return true;                        
+                    }
+                }
+            }
+            
+            else if(this.left==null){
+                
+                if(this.parent.parent==null){
+                    this.parent.right = null;
+                    this.parent = null;
+                    return true;
+                }
+                else{
+                    BSTree par = this.parent;
+                    BSTree gr = par.parent;
+                    //this is a right child
+                    if(par.right==this){                        
+                        BSTree left_child = par.left;
+                        // par is a right child
+                        if(gr.right==par)gr.right = this;
+                        // par is a left child
+                        else gr.left = this;
+                        this.parent = gr;
+                        this.left = left_child;
+                        if(left_child!=null)left_child.parent=this;
+                        par = null;
+                        return true;                                                    
+                    }
+                    // this is a left child
+                    else{
+                        BSTree right_child = par.right;
+                        // par is a right child
+                        if(gr.right==par)gr.right = this;
+                        // par is a left child
+                        else gr.left = this;
+                        this.parent = gr;
+                        this.left = this.right;                        
+                        this.right = right_child;
+                        if(right_child!=null)right_child.parent = this;
+                        par = null;
+                        return true;                        
+                    }
+                }
+            }
+            
+            else{
+                if(this.parent.parent==null){
+                    this.parent.right = null;
+                    this.parent = null;
+                    this.right = this.left;
+                    this.left = null;
+                    return true;
+                }
+                else{
+                    BSTree par = this.parent;
+                    BSTree gr = par.parent;
+                    //this is a right child
+                    if(par.right==this){                        
+                        BSTree left_child = par.left;
+                        // par is a right child
+                        if(gr.right==par)gr.right = this;
+                        // par is a left child
+                        else gr.left = this;
+                        this.parent = gr;
+                        this.right = this.left;
+                        this.left = left_child;
+                        if(left_child!=null)left_child.parent=this;
+                        par = null;
+                        return true;                                                    
+                    }
+                    // this is a left child
+                    else{
+                        BSTree right_child = par.right;
+                        // par is a right child
+                        if(gr.right==par)gr.right = this;
+                        // par is a left child
+                        else gr.left = this;
+                        this.parent = gr;                       
+                        this.right = right_child;
+                        if(right_child!=null)right_child.parent = this;
+                        par = null;
+                        return true;                        
+                    }
+                }
+            }
+        }
         
         BSTree e = new BSTree(z.address,z.size,z.key);
         
@@ -116,6 +251,40 @@ public class BSTree extends Tree {
         temp.key = succ.key;
         temp.address = succ.address;
         temp.size = succ.size;
+
+        // if the successor to be deleted is actually this
+        if(succ.address==this.address && succ.size==this.size && succ.key==this.key && succ.left==this.left && succ.right==this.right &&  succ.parent==this.parent){
+            // temp is the parent
+            // gr is for grandfather
+
+            // succ is the right child
+            if(temp.right==succ){
+                BSTree gr = temp.parent;
+                if(gr.right==temp)gr.right = succ;
+                else gr.left = succ;
+                succ.parent = gr;
+                succ.left = temp.left;
+                if(temp.left!=null)temp.left.parent=succ;
+                temp = null;
+                return true;                
+            }
+            // succ is the left child
+            else{
+                BSTree par = succ.parent;
+                BSTree gr = par.parent;
+                succ.address = par.address;
+                succ.key = par.key;
+                succ.size = par.size;
+                if(gr.right==par)gr.right = succ;
+                else gr.left = succ;
+                succ.parent = gr;
+                succ.left = succ.right;
+                succ.right = par.right;
+                if(par.right!=null)par.right.parent = succ;
+                par = null;
+                return true;
+            }
+        }
 
         if(succ.right==null){
             if(succ.parent.left==succ)succ.parent.left = null;
@@ -202,6 +371,7 @@ public class BSTree extends Tree {
 
     public BSTree getFirst()
     { 
+        if(this==null)return null;
         BSTree temp = this;
         while(temp.parent!=null)temp = temp.parent;
         if(temp.right==null)return null;
@@ -212,6 +382,8 @@ public class BSTree extends Tree {
 
     public BSTree getNext()
     { 
+        if(this==null)return null;
+        if(this.parent==null)return null;
         BSTree temp = this;
         if(temp.right!=null){
             temp=temp.right;
@@ -223,45 +395,86 @@ public class BSTree extends Tree {
         return temp.parent;
     }
 
+    private boolean isbst(BSTree root){
+        return check_bst(root, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private boolean check_bst(BSTree root,int min_key, int max_key, int min_add, int max_add){
+        if(root==null)return true;  
+        if(root.key<min_key || (root.key==min_key && root.address<min_add))return false;
+        if(root.key>max_key || (root.key==max_key && root.address>max_add))return false;
+        return (check_bst(root.left, min_key, root.key, min_add, root.address) && check_bst(root.right, root.key, max_key, root.address, max_add));
+    }
+
+    private boolean check_cycle(BSTree root){
+        if(root.left==null && root.right==null)return true;
+        if(root.left==null){
+            if(root.right.parent!=root)return false;
+            return check_cycle(root.right);
+        }
+        if(root.right==null){
+            if(root.left.parent!=root)return false;
+            return check_cycle(root.left);
+        }
+        if(root.right.parent!=root || root.left.parent!=root)return false;
+        return check_cycle(root.left) && check_cycle(root.right);        
+    }
+
+
     public boolean sanity()
     { 
+        if(this==null)return false;
+        BSTree temp = this;
+        // will try to go to root and also check for a cycle if any in the path of this to root
+        if(this.parent!=null){
+            BSTree slow = temp;
+            BSTree fast = temp.parent;
+            while(fast!=slow && fast.parent!=null && fast.parent.parent!=null){
+                fast = fast.parent.parent;
+                slow = slow.parent;
+            }
+            if(fast==slow)return false;
+            if(fast.parent==null)temp = fast;
+            else temp = fast.parent;
+        }
+        // if we reach here, this means there is no cycle in the path of this to root
+        // there might exist a cycle which is not in the path of this to root        
+
+        while(temp.parent!=null)temp = temp.parent;
+
+        // value of temp should be -1,-1,-1
+        if(temp.size!=-1 || temp.address!=-1 || temp.key!=-1)return false;
+
+        // left should be null
+        if(temp.left!=null)return false;
+
+        // empty tree
+        if(temp.right==null)return true;
+        
+        temp=temp.right;
+        BSTree root = temp;
+        // check if there is a cycle
+        if(!check_cycle(root))return false;
+
+        // Reaching this line ensures there is no cycle in my BSTree
+        
+        // check if we have a correct Binary tree or not i.e. order is satisfied or not
+        Boolean flag = isbst(root);
+
+        if(flag)return true;
+
         return false;
+    }    
+
+    public static void main(String[] args) {
+        BSTree d = new BSTree();
+        d = d.Insert(1,2,3);
+        d = d.Insert(4,5,6);
+        d = d.Insert(7,8,9);
+        d = d.Insert(7,8,10);
+        d = d.Insert(1,2,5);
+        d = d.Insert(1,2,4);
+        d.right = d.parent.parent.right;
+        System.out.println(d.sanity());
     }
-    // public static void main(String[] args) {
-    //     BSTree test=new BSTree();
-    //     test.Insert(10, 1, 1);
-    //     test.Insert(113, 387, 387);
-    //     test.Insert(9, 1, 1);
-    //     test.Insert(6, 2, 2);
-        // System.out.println(test.right.left.address);
-        // System.out.println(test.Find(1, false).address);
-        // test.Insert(0, 6, 0);
-        // test.Insert(6, 5, 6);
-        // test.Insert(10 , 5, 5);
-        // test.Insert(20, 10, 6);
-        // test.Insert(30, 15, 14);
-        // test.Insert(40, 20, 20);
-        // test.Insert(23, 16, 7);
-        // test.Insert(24, 17, 7);
-        // test.Insert(27, 17, 13);
-        // test.Insert(28, 17, 14);
-        // test.Insert(26, 18, 10);
-        // test.Insert(25, 19, 9);
-
-        // for(BSTree d = test.getFirst();d!=null;d=d.getNext()){
-        //     System.out.println(d.address + "," + d.size + ","+d.key);
-        // }
-
-    //         System.out.println(test.right.key + " "+test.right.right.key);
-
-    //     // BSTree bfit = test.Find(8, false);
-    //     // System.out.println(bfit.address + " " + bfit.size + " " + bfit.key);
-
-    //     // Dictionary iit = new BSTree(25, 19, 9);
-    //     // test.Delete(iit);
-    //     // bfit = test.Find(8, false);
-    //     // System.out.println(bfit.address + " " + bfit.size + " " + bfit.key);
-
-    // }
-
 }
