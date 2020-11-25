@@ -466,15 +466,4 @@ public class BSTree extends Tree {
         return false;
     }    
 
-    public static void main(String[] args) {
-        BSTree d = new BSTree();
-        d = d.Insert(1,2,3);
-        d = d.Insert(4,5,6);
-        d = d.Insert(7,8,9);
-        d = d.Insert(7,8,10);
-        d = d.Insert(1,2,5);
-        d = d.Insert(1,2,4);
-        d.right = d.parent.parent.right;
-        System.out.println(d.sanity());
-    }
 }
