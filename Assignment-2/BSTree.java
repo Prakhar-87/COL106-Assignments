@@ -27,6 +27,7 @@ public class BSTree extends Tree {
     //     adj[v].add(u);
     // }
 
+    // to compare the order of nodes
     private Boolean compare(BSTree a, BSTree b){
         if(a.key>b.key || (a.key==b.key && a.address>b.address))return true;
         return false;
@@ -35,27 +36,35 @@ public class BSTree extends Tree {
     public BSTree Insert(int address, int size, int key) 
     { 
         if(this==null)return null;
+
         BSTree new_ = new BSTree(address, size, key), temp = this;
         while(temp.parent!=null)temp=temp.parent;
+
         if(temp.right==null){temp.right = new_;new_.parent = temp;return new_;}
         temp = temp.right;
 
         while(true){
             if(compare(new_, temp)){
+                
                 if(temp.right==null){  
                     temp.right = new_;
                     new_.parent = temp;
                     return new_;
                 }
+
                 else temp = temp.right;
             }
+
             else{
+
                 if(temp.left==null){
                     temp.left = new_;
                     new_.parent = temp;
                     return new_;
                 }
+
                 else temp = temp.left;
+
             }
         }
 
@@ -64,46 +73,63 @@ public class BSTree extends Tree {
     public boolean Delete(Dictionary z)
     { 
         if(this==null)return false;
+
         BSTree temp = this;
         while(temp.parent!=null)temp = temp.parent;
+
         if(temp.right==null)return false;
         temp = temp.right;
 
+        // this case is for if the node to be deleted is "this"
+        // In this case, we can't really delete "this" node or else we will detach ourselves from BSTree
+        // So we will delete the appropriate node by copying values in its parent and then deleting parent
         if(this.parent!=null && this.address==z.address && this.size==z.size && this.key==z.key && (this.left==null || this.right==null)){            
+            
             this.address = this.parent.address;
             this.key = this.parent.key;
             this.size = this.parent.size;
+
             if(this.left==null && this.right==null){
+            
                 // we have to delete the root element and it is the only element
                 if(this.parent.parent==null){                    
                     this.parent.right = null;
                     this.parent = null;
                     return true;
                 }
+            
                 // it is a leaf node and my tree contains more than 1 element
                 else{
                     BSTree par = this.parent;
                     BSTree gr = par.parent;
+            
                     //this is a right child
                     if(par.right==this){                        
                         BSTree left_child = par.left;
+            
                         // par is a right child
                         if(gr.right==par)gr.right = this;
+            
                         // par is a left child
                         else gr.left = this;
+            
                         this.parent = gr;
                         this.left = left_child;
                         if(left_child!=null)left_child.parent=this;
                         par = null;
                         return true;                                                    
                     }
+            
                     // this is a left child
                     else{
                         BSTree right_child = par.right;
+            
                         // par is a right child
                         if(gr.right==par)gr.right = this;
+            
                         // par is a left child
                         else gr.left = this;
+            
                         this.parent = gr;
                         this.right = right_child;
                         if(right_child!=null)right_child.parent = this;
@@ -120,29 +146,39 @@ public class BSTree extends Tree {
                     this.parent = null;
                     return true;
                 }
+
                 else{
+                
                     BSTree par = this.parent;
                     BSTree gr = par.parent;
+                
                     //this is a right child
                     if(par.right==this){                        
                         BSTree left_child = par.left;
+                
                         // par is a right child
                         if(gr.right==par)gr.right = this;
+                
                         // par is a left child
                         else gr.left = this;
+                
                         this.parent = gr;
                         this.left = left_child;
                         if(left_child!=null)left_child.parent=this;
                         par = null;
                         return true;                                                    
                     }
+                
                     // this is a left child
                     else{
                         BSTree right_child = par.right;
+                
                         // par is a right child
                         if(gr.right==par)gr.right = this;
+                
                         // par is a left child
                         else gr.left = this;
+                
                         this.parent = gr;
                         this.left = this.right;                        
                         this.right = right_child;
@@ -154,6 +190,7 @@ public class BSTree extends Tree {
             }
             
             else{
+
                 if(this.parent.parent==null){
                     this.parent.right = null;
                     this.parent = null;
@@ -161,9 +198,11 @@ public class BSTree extends Tree {
                     this.left = null;
                     return true;
                 }
+                
                 else{
                     BSTree par = this.parent;
                     BSTree gr = par.parent;
+                
                     //this is a right child
                     if(par.right==this){                        
                         BSTree left_child = par.left;
@@ -178,6 +217,7 @@ public class BSTree extends Tree {
                         par = null;
                         return true;                                                    
                     }
+                
                     // this is a left child
                     else{
                         BSTree right_child = par.right;
@@ -195,10 +235,8 @@ public class BSTree extends Tree {
             }
         }
         
+        // Reaching here means we don't really have to delete "this"
         BSTree e = new BSTree(z.address,z.size,z.key);
-        
-        // Boolean flag = delete(temp, e);
-        // return flag;
 
         while(temp!=null && (temp.key!=e.key || temp.address!=e.address || temp.size!=e.size)){
             if(compare(e, temp)){
@@ -209,6 +247,7 @@ public class BSTree extends Tree {
 
         if(temp==null)return false;
 
+        // leaf is to be deleted
         if(temp.left==null && temp.right==null){
             if(temp.parent.left==temp)temp.parent.left = null;
             if(temp.parent.right==temp)temp.parent.right = null;            
@@ -217,6 +256,7 @@ public class BSTree extends Tree {
             return true;
         }
 
+        // a node with only one child
         if(temp.left==null || temp.right==null){
             if(temp.left==null){
                 if(temp.parent.left==temp){
@@ -245,6 +285,8 @@ public class BSTree extends Tree {
             return true;
         }
 
+        // Reaching this line means the node to be deleted contains both left and right child
+        // So we will copy the values of successor in the current node and try to delete its successor
         BSTree right_child = temp.right;
         BSTree succ = right_child;
         while(succ.left!=null)succ = succ.left;
@@ -252,7 +294,9 @@ public class BSTree extends Tree {
         temp.address = succ.address;
         temp.size = succ.size;
 
-        // if the successor to be deleted is actually this
+        // Another which might occur is that successor to be deleted is "this" node
+
+        // if the successor to be deleted is "this"
         if(succ.address==this.address && succ.size==this.size && succ.key==this.key && succ.left==this.left && succ.right==this.right &&  succ.parent==this.parent){
             // temp is the parent
             // gr is for grandfather
@@ -286,6 +330,10 @@ public class BSTree extends Tree {
             }
         }
 
+        // Reaching here means we can safely delete successor as successor is not "this"
+        //succ don't have left child
+        
+        // No right child
         if(succ.right==null){
             if(succ.parent.left==succ)succ.parent.left = null;
             if(succ.parent.right==succ)succ.parent.right = null;            
@@ -317,6 +365,7 @@ public class BSTree extends Tree {
         if(temp.right==null)return null;
         temp = temp.right;
 
+        //Exact==true means we have to find a node such that node.key == required key        
         if(exact){
             while(temp!=null && temp.key!=key){
                 if(temp.key<key)temp=temp.right;
@@ -338,6 +387,7 @@ public class BSTree extends Tree {
                 else temp = temp.right;
             }
         }
+        // Exact == false means we need to find smallest node such that node.key >= key
         else{
             while(temp!=null && temp.key<key)temp=temp.right;
             if(temp==null)return null;
@@ -369,6 +419,7 @@ public class BSTree extends Tree {
         }
     }
 
+    // getFirst will return the minimum element of whole tree i.e. 1st element of Inorder Traversal
     public BSTree getFirst()
     { 
         if(this==null)return null;
@@ -380,10 +431,14 @@ public class BSTree extends Tree {
         return temp;
     }
 
+    // Will return the next element in inorder traversal
     public BSTree getNext()
     { 
         if(this==null)return null;
+        
+        // if getnext called on sentinel then return null
         if(this.parent==null)return null;
+
         BSTree temp = this;
         if(temp.right!=null){
             temp=temp.right;
@@ -395,17 +450,24 @@ public class BSTree extends Tree {
         return temp.parent;
     }
 
+    // Function to check correct order of Binary Search Tree (isbst will initiate the process by calling check_bst)
     private boolean isbst(BSTree root){
         return check_bst(root, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
+    // Function to check correct order of BSTree
+    // Will check if the current node meets the conditions and then will tighten the bound and check in its left and right subtree
     private boolean check_bst(BSTree root,int min_key, int max_key, int min_add, int max_add){
         if(root==null)return true;  
         if(root.key<min_key || (root.key==min_key && root.address<min_add))return false;
         if(root.key>max_key || (root.key==max_key && root.address>max_add))return false;
-        return (check_bst(root.left, min_key, root.key, min_add, root.address) && check_bst(root.right, root.key, max_key, root.address, max_add));
+
+        // left subtree can contain same pairs if it exist, but right subtree can't
+        // This is the reason of passing root.address + 1 in 2nd check_bst function
+        return (check_bst(root.left, min_key, root.key, min_add, root.address) && check_bst(root.right, root.key, max_key, root.address+1, max_add));
     }
 
+    // Function to check if there is a cycle in my tree or not
     private boolean check_cycle(BSTree root){
         if(root.left==null && root.right==null)return true;
         if(root.left==null){
@@ -465,5 +527,5 @@ public class BSTree extends Tree {
 
         return false;
     }    
-
+    
 }
