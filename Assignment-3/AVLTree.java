@@ -31,6 +31,7 @@ public class AVLTree extends BSTree {
         return false;
     }
 
+    // Seperate function for height to incorporate height of null node as well
     private int height(AVLTree a){
         if(a==null)return -1;
         return a.height;
@@ -148,11 +149,13 @@ public class AVLTree extends BSTree {
         return temp;
     }
     
+    // Will give minimum node in a subtree with n as its root
     private AVLTree min_node(AVLTree n){
         while(n.left!=null)n=n.left;
         return n;
     }
 
+    // Will give maximum node in a subtree with n as its root
     private AVLTree max_node(AVLTree n){   
         while(n.right!=null)n=n.right;
         return n;
@@ -393,20 +396,28 @@ public class AVLTree extends BSTree {
         // finding the node to be deleted
         AVLTree to_del = temp;
         
+        // Finding the node to be deleted
         while(temp!=null && (temp.key!=e.key || temp.address!=e.address || temp.size!=e.size)){
             if(compare(e, temp)){
                 temp = temp.right;
             }
             else temp = temp.left;
         }
+        
+        //temp==null means node not found
         if(temp==null)return false;
+
         if(temp.left!=null && temp.right!=null){
             AVLTree succ = min_node(temp.right);
+            
+            // Here I am checking that whether the successor of node to be deleted is this or not
+            // If yes then I will delete using predecessor and hence pass 1 in my decider function
             if(succ.address==this.address && succ.size==this.size && succ.key==this.key){
                 delete(to_del, e, 1);
                 return true;
             }
         }
+
         delete(to_del,e,0);
         return true;
     }
@@ -588,39 +599,4 @@ public class AVLTree extends BSTree {
 
         return check_height(temp);
     }
-    // public static void main(String[] args) {
-    //     AVLTree test = new AVLTree();
-    //     test = test.Insert(10 , 10, 10);
-    //     test = test.Insert(15, 100, 10);
-    //     test = test.Insert(1, 100, 5);
-    //     test = test.Insert(2, 100, 12);
-    //     test = test.Insert(156, 100, 10);
-    //     test = test.Insert(5, 100, 15);
-    //     test = test.Insert(5, 100, 18);
-    //     test = test.Insert(5, 100, 19);
-    //     test = test.Insert(5, 4, 4);
-    //     test = test.Insert(5, 4, 3);
-    //     test = test.Insert(5, 4, 2);
-    //     test = test.Insert(5, 4, 1);
-    //     Dictionary e=new AVLTree(156,100,10);
-    //     test.Delete(e);
-    //     test = test.parent.parent.right.left;
-    //     e = new AVLTree(5,4,4);
-    //     test.Delete(e);
-    //     test = test.parent.parent.parent;
-    //     e = new AVLTree(2,100,12);
-    //     test.Delete(e);
-    //     e = new AVLTree(5,100,18);
-    //     test.Delete(e);
-    //     e = new AVLTree(10,10,10);
-    //     test.Delete(e);
-    //     test = test.right;
-    //     e = new AVLTree(15,100,10);
-    //     test.Delete(e);
-    //     for (AVLTree d = test.getFirst(); d != null; d = d.getNext()){
-    //         System.out.println(d.address+" "+d.size+" "+d.key+" height "+d.height);
-    //     }
-    // }
 }
-
-
