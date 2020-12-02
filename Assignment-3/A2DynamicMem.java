@@ -34,8 +34,10 @@ public class A2DynamicMem extends A1DynamicMem {
                 freeBlk.Delete(temp);
                 allocBlk.Insert(a, blockSize, a);
                 freeBlk.Insert(a+blockSize, s-blockSize, s-blockSize);  
-                // System.out.println(freeBlk.sanity());
-                // System.out.println(allocBlk.sanity());              
+                // if(temp.address==6415){
+                    // System.out.println(freeBlk.sanity());
+                    // System.out.println(allocBlk.sanity());              
+                // }
                 return a;
             }            
         }
@@ -63,7 +65,14 @@ public class A2DynamicMem extends A1DynamicMem {
 
 
     public void Defragment() {
-        BSTree defrag = new BSTree();
+        // BSTree defrag = new BSTree();
+        Dictionary defrag;
+        if(this.type==2){
+            defrag = new BSTree();
+        }
+        else {
+            defrag = new AVLTree();
+        }
         if(freeBlk.getFirst()==null || freeBlk.getFirst().getNext()==null)return;
         for (Dictionary d = freeBlk.getFirst(); d!=null; d = d.getNext())defrag.Insert(d.address, d.size, d.address);
 
@@ -71,12 +80,13 @@ public class A2DynamicMem extends A1DynamicMem {
 
         while(min_address!=null){
             
-            Dictionary temp = defrag.Find(min_address.address + min_address.size, true);
+            // Dictionary temp = defrag.Find(min_address.address + min_address.size, true);
+            Dictionary temp = min_address.getNext();
             
-            if(temp!=null){
+            if(temp!=null && temp.address==(min_address.address + min_address.size)){
                 int a_temp = temp.address, s_temp = temp.size, k_temp = temp.key;                                
                 int a_min = min_address.address, s_min = min_address.size, k_min = min_address.key;                
-                if(type==2){
+                if(this.type==2){
                     BSTree min_free = new BSTree(a_min,s_min,s_min);
                     BSTree temp_free = new BSTree(a_temp,s_temp,s_temp);
                     BSTree min_defrag = new BSTree(a_min,s_min,a_min);
@@ -85,9 +95,9 @@ public class A2DynamicMem extends A1DynamicMem {
                     freeBlk.Delete(temp_free);
                     defrag.Delete(min_defrag);                
                     defrag.Delete(temp_defrag);                                
-                    defrag.Insert(a_min, s_min+s_temp, a_min);
+                    min_address = defrag.Insert(a_min, s_min+s_temp, a_min);
                     freeBlk.Insert(a_min, s_temp+s_min, s_temp+s_min);
-                    min_address = defrag.getFirst();
+                    // min_address = defrag.getFirst();
                 }
                 else{
                     AVLTree min_free = new AVLTree(a_min,s_min,s_min);
@@ -98,9 +108,9 @@ public class A2DynamicMem extends A1DynamicMem {
                     freeBlk.Delete(temp_free);
                     defrag.Delete(min_defrag);                
                     defrag.Delete(temp_defrag);                                
-                    defrag.Insert(a_min, s_min+s_temp, a_min);
+                    min_address = defrag.Insert(a_min, s_min+s_temp, a_min);
                     freeBlk.Insert(a_min, s_temp+s_min, s_temp+s_min);
-                    min_address = defrag.getFirst();
+                    // min_address = defrag.getFirst();
                 }                
             }        
             else {
