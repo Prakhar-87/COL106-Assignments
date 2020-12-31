@@ -4,9 +4,9 @@
 * 1st-Assignment -> Implementation using Doubly Linked List
 * 2nd-Assignment -> Implementation using Binary Search Tree
 * 3rd-Assignment -> Implementation using AVL Tree
-##### Efficency of Memory Allocator System improves assignment by assignment
+###### Efficency of Memory Allocator System improves assignment by assignment
 
-For more information on Assignments 1,2,3 -> read PDF file
+* For more information on Assignments 1,2,3 -> read PDF file
 
 ### 4th Assignment
 #### Allowed_Imports
@@ -18,9 +18,10 @@ For more information on Assignments 1,2,3 -> read PDF file
 * Edges.csv and Nodes.csv files contain vertices and edges of the graph
 * To run this repo, clone this repo and run javac assignment4.java followed by java assignment4
 * input.txt will take care of input 
+* For more information on Assignment 4 -> read PDF file
 
 P.S: If you want, you can change the output filename in assignment4.java in the try_catch block
-Enjoy Coding :)
+##### Enjoy Coding :)
 
 
 
