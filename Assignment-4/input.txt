@@ -1,3 +1,5 @@
-nodes.csv
-edges.csv
-as
+E:\2nd_Year\3rd_sem\COL106_Data_Structures\Assignment_4\Naruto_tests (1)\Naruto_tests\data1.csv
+E:\2nd_Year\3rd_sem\COL106_Data_Structures\Assignment_4\Naruto_tests (1)\Naruto_tests\data1_edges.csv
+average
+rank
+independent_storylines_dfs

@@ -8,46 +8,53 @@ import java.util.Scanner;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class assignment4{
 
     static class graph{
         int n;
-        LinkedList<Edge>[] adj;
-        LinkedList<Integer> vis;
-        LinkedList<Integer> avg;
-        LinkedList<cooccurence_count> rank;
+        ArrayList<Edge>[] adj;
+        ArrayList<Integer> vis; // Keeping check of visited nodes
+        ArrayList<Integer> avg; // For 1st part
+        ArrayList<cooccurence_count> rank; // For 2nd part, will sort it to get desired output
         HashMap<String, Integer> nodes = new HashMap<>();
         HashMap<Integer, String> nodes_reverse = new HashMap<>();
-        FileWriter writer;
+        ArrayList<String>[] scc;
+        // FileWriter writer;
         int count = 0;
         graph(int x){
             try{
-                writer = new FileWriter("rank_prakhar.txt");
+                // writer = new FileWriter("rank_prakhar.txt");
+                // writer = new FileWriter("rank_prakhar.txt");
             }
             catch (Exception e){
                 e.printStackTrace();
             }
             this.n = x;
             // this.writer = writer;
-            adj = new LinkedList[n+1];
-            vis = new LinkedList<Integer>();
-            avg = new LinkedList<Integer>();
-            rank = new LinkedList<cooccurence_count>();
+            adj = new ArrayList[n+1];
+            scc = new ArrayList[n+1];
+            vis = new ArrayList<Integer>();
+            avg = new ArrayList<Integer>();
+            rank = new ArrayList<cooccurence_count>();
             for(int i=0;i<=n;i++){
-                adj[i] = new LinkedList<>();
+                adj[i] = new ArrayList<>();
                 vis.add(0);
                 avg.add(0);
             }            
         }
 
-        void addVertex(String s,int i){
+        void addVertex(String s,int i,int number_){
             nodes.put(s,i);
             nodes_reverse.put(i,s);
+            // if(number_>172000){
+            //     System.out.println(number_);
+            // }
         }
 
         void addEdge(String s,String d,int w){
             Edge e = new Edge(nodes.get(d),w);
-            adj[nodes.get(s)].addFirst(e);
+            adj[nodes.get(s)].add(e);
         }
 
         //  1st function to calculate Avg value i.e. 1st part of Assignment
@@ -70,10 +77,6 @@ public class assignment4{
             System.out.printf("%.2f",fin); // To round off answer to 2 decimal places.
             System.out.println();
         }
-
-        // Next 7 functions are for finding Rank i.e. 2nd part of Assignment
-        // compare function will return true if 1st argument is less than the 2nd argument
-        // i.e. return True if a < b
         Boolean compare(cooccurence_count a,cooccurence_count b){
             int counta = a.getCount();
             int countb = b.getCount();
@@ -81,19 +84,19 @@ public class assignment4{
             String sb = b.getCharacter();
             if(counta<countb)return false;
             else if(counta>countb)return true;
-            int x = sa.compareTo(sb);
-            if(x<0)return false;
-            return true;
+            int x = sa.compareToIgnoreCase(sb);
+            if(x>0)return true;
+            return false;
         }
 
-        void merge (LinkedList<cooccurence_count> a, int l, int m, int r){
+        void merge (ArrayList<cooccurence_count> a, int l, int m, int r){
             // l to m will comprise of left array
             // m+1 to r will comprise of right array
             
             int n1 = m-l+1;
             int n2 = r-m;
-            LinkedList<cooccurence_count> left = new LinkedList<cooccurence_count>();
-            LinkedList<cooccurence_count> right = new LinkedList<cooccurence_count>();
+            ArrayList<cooccurence_count> left = new ArrayList<cooccurence_count>();
+            ArrayList<cooccurence_count> right = new ArrayList<cooccurence_count>();
 
             for(int i=0;i<n1;i++)left.add(new cooccurence_count(a.get(l+i).getCount(),a.get(l+i).getCharacter()));
             for(int j=0;j<n2;j++)right.add(new cooccurence_count(a.get(m+1+j).getCount(),a.get(m+1+j).getCharacter()));
@@ -119,7 +122,7 @@ public class assignment4{
             // catch(Exception e){e.printStackTrace();}
         }
     
-        void mergesort(LinkedList<cooccurence_count> a, int l, int r){
+        void mergesort(ArrayList<cooccurence_count> a, int l, int r){
             int m = (l+r)/2;
             if(r>l){
                 mergesort(a,l,m);
@@ -129,139 +132,224 @@ public class assignment4{
             return;
         }
 
-        void printarray(LinkedList<cooccurence_count> array,int l,int r,Boolean flag){
-            if(flag){for(int i=l;i<=r;i++){
-                // System.out.print(array.get(i).getCharacter());
-                // if(i==0)System.out.println();
-                // else System.out.print(",");
-                try{
-                    // writer.write("Char:" + array.get(i).getCharacter() + " Count:" + array.get(i).getCount() + "   ");
-                    writer.write(array.get(i).getCharacter());
-                    if(i==r){writer.write("\n");/* writer.close(); */}
-                    else writer.write(",");
+        void printarray(ArrayList<cooccurence_count> array,int l,int r,Boolean flag){
+            if(flag){
+                for(int i=l;i<=r;i++){
+                    // System.out.print(array.get(i).getCharacter() + " " + array.get(i).getCount() + "\n");
+                    System.out.print(array.get(i).getCharacter());
+                    if(i==r)System.out.println();
+                    else System.out.print(",");
                 }
-                catch(IOException e){
-                    e.printStackTrace();
-                }                
-            }}
-            else{for(int i=l;i>=r;i--){
-                // System.out.print(array.get(i).getCharacter());
-                // if(i==0)System.out.println();
-                // else System.out.print(",");
-                try{
-                    writer.write(array.get(i).getCharacter());
-                    if(i==r){writer.write("\n");/* writer.close(); */}
-                    else writer.write(",");
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }                
-            }}
-        }
+            }
+        }  
 
-        // Will be using Merge-Sort 
-        void sort(LinkedList<cooccurence_count> array){
+        void sort(ArrayList<cooccurence_count> array){
             // printarray(array, 0, array.size()-1, true);
             mergesort(array, 0, n-1);
             printarray(array, 0, array.size()-1, true);
-            try{writer.close();}
-            catch(IOException e){e.printStackTrace();}
-            // for(int i=n-1;i>=0;i--){
-            //     // System.out.print(array.get(i).getCharacter());
-            //     // if(i==0)System.out.println();
-            //     // else System.out.print(",");
-            //     try{
-            //         writer.write(array.get(i).getCharacter());
-            //         if(i==0){writer.write("\n");writer.close();}
-            //         else writer.write(",");
-            //     }
-            //     catch(IOException e){
-            //         e.printStackTrace();
-            //     }
-                
-            // }
         }
 
         void addInRank(int count, String character){
             cooccurence_count c = new cooccurence_count(count, character);
             rank.add(c);
         }
+  
 
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------        
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------
         void rank(){
+            // System.out.println(n);
+            // System.out.println(nodes.get("AaKalibre (New Earth)Aa"));
+            // System.out.println(nodes_reverse.get(18361));
             for(int i=1;i<=n;i++){
                 int count=0;
                 for(int j=0;j<adj[i].size();j++){
-                    if(avg.get(adj[i].get(j).getVertexId())!=i){
-                        avg.set(adj[i].get(j).getVertexId(),i);
-                        count +=adj[i].get(j).getLength();
-                    }
+                    // if(avg.get(adj[i].get(j).getVertexId())!=i){
+                        if(i==18361){
+                            avg.set(adj[i].get(j).getVertexId(),i);
+                            count +=adj[i].get(j).getLength();
+                            // System.out.println(count);
+                        }
+                        else{
+                            avg.set(adj[i].get(j).getVertexId(),i);
+                            count +=adj[i].get(j).getLength();    
+                        }
+                        
+                    // }
                 }
-                // Add count,String to rank and then call sort to get the answer
                 addInRank(count, nodes_reverse.get(i));
             }
-            // I have inserted all Strings with their count number in a list
-            // Now, I just need to sort them and then print them to get the desired output
             sort(rank);
         }
+ 
+        // Code for 3rd Part
+        Boolean compare_dfs(String a,String b){
+            int x = a.compareToIgnoreCase(b);
+            if(x<0)return false;
+            return true;
+        }
+        
+        void merge_dfs(ArrayList<String> a, int l, int m, int r){
+            // l to m will comprise of left array
+            // m+1 to r will comprise of right array
+            
+            int n1 = m-l+1;
+            int n2 = r-m;
+            ArrayList<String> left = new ArrayList<String>();
+            ArrayList<String> right = new ArrayList<String>();
 
+            try{for(int i=0;i<n1;i++)left.add(a.get(i+l));
+            for(int j=0;j<n2;j++)right.add(a.get(m+1+j));}
+            catch(Exception e){
+                System.out.println("Size:" + a.size() + ",l:" + l + ",r:" + r + ",m:" + m);
+            }    
+            int k=l, i=0, j=0;    
+            while(i<n1 && j<n2){
+                if(compare_dfs(left.get(i), right.get(j))){a.set(k,left.get(i));i++;}
+                else{a.set(k,right.get(j));j++;}
+                k++;
+            }
+            while(i<n1){a.set(k,left.get(i));i++;k++;}
+            while(j<n2){a.set(k,right.get(j));j++;k++;}        
+        }
+    
+        void mergesort_dfs(ArrayList<String> a, int l, int r){
+            int m = (l+r)/2;
+            if(r>l){
+                mergesort_dfs(a,l,m);
+                mergesort_dfs(a,m+1,r);
+                merge_dfs(a,l,m,r);
+            }
+            return;
+        }
         
+        void sort_dfs(ArrayList<String> array){
+            // printarray(array, 0, array.size()-1, true);
+            mergesort_dfs(array, 0, array.size()-1);
+            // printarray(array, 0, array.size()-1, true);
+        }
+
+
+        Boolean compare_int(pair a,pair b){
+            if(a.getSize()>b.getSize() || (a.getSize()==b.getSize() && compare_dfs(a.getString(), b.getString())))return true;
+            return false;
+        }
         
-        void dfs(int u){
+        void merge_int(ArrayList<pair> a, int l, int m, int r){
+            int n1 = m-l+1;
+            int n2 = r-m;
+            ArrayList<pair> left = new ArrayList<pair>();
+            ArrayList<pair> right = new ArrayList<pair>();
+
+            for(int i=0;i<n1;i++)left.add(a.get(i+l));
+            for(int j=0;j<n2;j++)right.add(a.get(m+1+j));
+            
+            int k=l, i=0, j=0;    
+            while(i<n1 && j<n2){
+                if(compare_int(left.get(i), right.get(j))){a.set(k,left.get(i));i++;}
+                else{a.set(k,right.get(j));j++;}
+                k++;
+            }
+            while(i<n1){a.set(k,left.get(i));i++;k++;}
+            while(j<n2){a.set(k,right.get(j));j++;k++;}        
+        }
+        
+        void mergesort_int(ArrayList<pair> a, int l, int r){
+            int m = (l+r)/2;
+            if(r>l){
+                mergesort_int(a,l,m);
+                mergesort_int(a,m+1,r);
+                merge_int(a,l,m,r);
+            }
+        }
+        
+        void sort_int(ArrayList<pair> array){
+            // printarray(array, 0, array.size()-1, true);
+            mergesort_int(array, 0, array.size()-1);
+            // printarray(array, 0, array.size()-1, true);
+        }
+        
+        void dfs(int u,int num_scc){
             vis.set(u,1);            
-            try{
-                writer.write(u);
-                count++;
-            }
-            catch(IOException e){
-                e.printStackTrace();
-                System.out.println(u);
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
+            scc[num_scc].add(nodes_reverse.get(u));
+
             for(int i=0;i<adj[u].size();i++){
                 if(vis.get(adj[u].get(i).getVertexId())!=1){
-                    dfs(adj[u].get(i).getVertexId());
-                }
-            }
-            if(count==n){
-                try {
-                    writer.close();
-                } catch (Exception e) {
-                    //TODO: handle exception
-                    e.printStackTrace();
+                    dfs(adj[u].get(i).getVertexId(),num_scc);
                 }
             }
         }
+        
+        void independent_storylines_dfs(){      
+            int num_scc = 0;      
+            ArrayList<pair> order = new ArrayList<pair>();
+            // pair -> Constructor -> (size,FirstString,SCC_number)
+            for(int i=1;i<=n;i++){
+                if(vis.get(i)!=1){
+                    scc[num_scc] = new ArrayList<>();
+                    dfs(i,num_scc);
+                    num_scc++;
+                }
+            }
+            for(int i=0;i<num_scc;i++){
+                sort_dfs(scc[i]);
+                order.add(new pair(scc[i].size(),scc[i].get(0),i));
+            }
+            sort_int(order);
+            for(int i=0;i<num_scc;i++){
+                for(int j=0;j<scc[order.get(i).getSccNum()].size();j++){
+                    System.out.print(scc[order.get(i).getSccNum()].get(j));
+                    if(j!=scc[order.get(i).getSccNum()].size()-1){System.out.print(",");}
+                    else System.out.println();
+                    // try{
+                        // writer.write(scc[order.get(i).getSccNum()].get(j));
+                        // if(j!=scc[order.get(i).getSccNum()].size()-1){
+                        //     writer.write(",");
+                        // }
+                    // }
+                    // catch(Exception e){e.printStackTrace();}
+                }
+            }
+        }            
     }
 
     public static void main(String[] args) throws Exception{
         Scanner s = new Scanner(System.in);
+        // FileOutputStream f = new FileOutputStream("rank2_prakhar.txt");
+        FileOutputStream f = new FileOutputStream("dfs2_prakhar.txt");
+        PrintStream console = System.out;
+        System.setOut(new PrintStream(f));
         BufferedReader inp = new BufferedReader(new FileReader("input.txt"));
         // String nodes_file = s.next();
         // String edges_file = s.next();
         // String function = s.next();
         String nodes_file = inp.readLine();
         String edges_file = inp.readLine();
-        String function = inp.readLine();
+        String function1 = inp.readLine();
+        String function2 = inp.readLine();
+        String function3 = inp.readLine();
         inp.close();
+        // String nodes_file = args[0];
+        // String edges_file = args[1];
+        // String function = args[2];
         s.close();
+        // System.out.println(nodes_file + " " + edges_file + " " + function);
         String line = "";
         graph g;
         int i=1;
         int num = 0;        
-        FileWriter writer = null;
         HashMap<String, Integer> nodes_temp = new HashMap<>();
-        try{
-            writer = new FileWriter("output_node.txt");
-        }
-        catch(Exception e){
-            System.out.println("Error");
-            e.printStackTrace();
-        }
+
         try {
-            BufferedReader br = new BufferedReader(new FileReader(nodes_file));    
-            
+            BufferedReader br = new BufferedReader(new FileReader(nodes_file));                
             br.readLine();
             while((line = br.readLine()) != null){
                 String[] values;
@@ -281,8 +369,8 @@ public class assignment4{
             }
             num = i-1;
             
-            writer.close();
-            br.close();
+            // writer.close();
+            // br.close();
         }
         catch(FileNotFoundException e){
             e.printStackTrace();
@@ -295,17 +383,18 @@ public class assignment4{
 
         try{
             // writer.open();
-            writer = new FileWriter("output_edge.txt");
+            // writer = new FileWriter("output_edge.txt");
         }
         catch(Exception e){
             System.out.println("Error");
             e.printStackTrace();
         }
-
+        int number=0;
         for (Map.Entry<String, Integer> e : nodes_temp.entrySet()){ 
-            // System.out.println("Key: " + e.getKey() + " Value: " + e.getValue()); 
+            // System.out.println("Key: " + e.getKey() + " Value: " + e.getValue());             
             try{
-                g.addVertex(e.getKey(), e.getValue());
+                g.addVertex(e.getKey(), e.getValue(),number);
+                number++;
                 // writer.write("Key:" + e.getKey() + "   ");
                 // writer.write("Value:" + e.getValue() + "\n");
             }
@@ -314,6 +403,7 @@ public class assignment4{
                 er.printStackTrace();
             }
         }
+        // System.out.println(number);
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(edges_file));    
@@ -322,7 +412,7 @@ public class assignment4{
                 String[] values;
                 String[] sub_values;
                 String source, target;
-                int weight;
+                int weight=0;
                 // This extract all the edges from edges.csv file
                 if(line.charAt(0)=='\"'){
                     values = line.split("\",");
@@ -346,46 +436,57 @@ public class assignment4{
                     values = line.split(",\"");
                     if(values.length==1){
                         values = line.split(",");
-                        // writer.append(values[0]);
-                        // writer.append(values[1]);
-                        // writer.append(values[2]);
                         source = values[0];
                         target = values[1];
-                        weight = Integer.parseInt(values[2]);
+                        try{weight = Integer.parseInt(values[2]);}
+                        catch(Exception e){System.out.println("ERROR\n" + source + " " + target);}
                     }
                     else{
-                        // writer.append(values[0]);
                         source = values[0];
                         values = values[1].split("\",");
-                        // writer.append(values[0]);                        
-                        // writer.append(values[1]);
                         target = values[0];
                         weight = Integer.parseInt(values[1]);
                     }
                 }                
-                // writer.append("\n");
-                // System.out.println(nodes.get("Richards, Franklin B"));
+                int tempe=0;
                 try{
                     g.addEdge(source, target, weight);
                     g.addEdge(target, source, weight);
                 }
                 catch(NullPointerException e){
-                    System.out.println("Source:" + source + ",Tar:" + target + ",Weight:" +weight + "\n");
+                    if(tempe==0)
+                    {System.out.println("Source:" + source + ",Tar:" + target + ",Weight:" +weight + "\n");tempe++;}
                 }
             }
-            writer.close();
-            br.close();
         }
         catch(FileNotFoundException e){
             e.printStackTrace();
         }
-        catch(IOException e){
-            e.printStackTrace();
-        }
 
-        // g.dfs(1);
-        g.average();
-        g.rank();
+        
+        long start = System.currentTimeMillis();
+        if(function1.equals("average")){
+            g.average();
+        }
+        long end = System.currentTimeMillis();
+        System.setOut(console);
+        System.out.println("Average:" + (double)(end-start) + " ms");
+        System.setOut(new PrintStream(f));
+        start = System.currentTimeMillis();    
+        if(function2.equals("rank")){
+            g.rank();
+        }
+        end = System.currentTimeMillis();
+        System.setOut(console);
+        System.out.println("Rank:" + (double)(end-start) + " ms");
+        System.setOut(new PrintStream(f));
+        start = System.currentTimeMillis();    
+        if(function3.equals("independent_storylines_dfs")){
+            g.independent_storylines_dfs();
+        } 
+        end = System.currentTimeMillis();
+        System.setOut(console);
+        System.out.println("Independent_storylines_dfs:" + (double)(end-start) + " ms");
     }
 }
 
@@ -423,5 +524,26 @@ class cooccurence_count
 
     public String getCharacter(){
         return character;
+    }
+}
+
+class pair{
+    private int size_scc;
+    private String first;
+    private int scc_number;
+
+    pair(int size,String first,int num){
+        this.size_scc = size;
+        this.first = first;
+        this.scc_number = num;
+    }    
+    public int getSize(){
+        return this.size_scc;
+    }
+    public String getString(){
+        return this.first;
+    }
+    public int getSccNum(){
+        return this.scc_number;
     }
 }
