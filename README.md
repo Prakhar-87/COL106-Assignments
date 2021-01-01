@@ -20,8 +20,16 @@
 * input.txt will take care of input 
 * For more information on Assignment 4 -> read PDF file
 
-P.S: If you want, you can change the output filename in assignment4.java in the try_catch block
-##### Enjoy Coding :)
+#### More Testcases
+* I have uploaded 2 test cases with roughly 2 lakh and 8 lakh vertices.
+* These are dense graphs which might help you to test the correctness and time complexity of your code.
+* I have attached my outputs and the time taken to compute them in the avg_data1_data2.txt file. 
+* Also attached compare.py function, which might help to debug in case outputs doesn't match.
+* Link for inputs: https://drive.google.com/drive/folders/1csvT4GrG7a5Kk_kLWXr5szl8ALQAF11Q?usp=sharing
+* The edge file also contains multiple edges between nodes.
+* Replace "dfs2_prakhar.txt" ( FileOutputStream f = new FileOutputStream("dfs2_prakhar.txt") ) to the file name in which you want the output.
 
-
+##### P.S: Use java -Xss32m assignment4 command to avoid Stack Overflow error.
+##### Considering the input size of data2 (in drive), close other files to ensure that your code run smoothly and your pc doesn't hang
+#### Enjoy Coding :)
 
