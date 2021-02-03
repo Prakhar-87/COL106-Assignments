@@ -108,9 +108,13 @@ public class A4_2019CS50441{
             
             int k=l, i=0, j=0;    
             while(i<n1 && j<n2){
-                if(compare(left.get(i), right.get(j))){a.set(k,left.get(i));i++;}
+                try{if(compare(left.get(i), right.get(j))){a.set(k,left.get(i));i++;}
                 else{a.set(k,right.get(j));j++;}
-                k++;
+                k++;}
+                catch(Exception e){
+                    // System.out.println("i:" + i + ",j:"+j+",n1:"+n1+",n2:"+n2);
+                    System.out.println("left:" + left.get(i).getCharacter() + ",right:" +  right.get(j).getCharacter());
+                }
             }
             while(i<n1){a.set(k,left.get(i));i++;k++;}
             while(j<n2){a.set(k,right.get(j));j++;k++;}        
