@@ -96,7 +96,7 @@ public class A1List extends List {
 
         temp = temp.getFirst();
         for(A1List x = temp; x!=null; x = x.getNext()){
-            if(x.key==d.key && x.address==d.address && x.size==d.size){
+            if(x.key==d.key && x==d){
                 A1List next_ = x.next, prev_ = x.prev;
                 next_.prev = prev_;
                 prev_.next = next_;

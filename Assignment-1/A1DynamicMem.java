@@ -20,25 +20,6 @@ public class A1DynamicMem extends DynamicMem {
         return ;
     }
 
-    public void printBlk(){
-        System.out.print("freeBlk is : ");
-        Dictionary first = this.freeBlk.getFirst();
-        while(first!=null){
-          System.out.print(" ("+first.address+", "+first.size+", "+first.key+") ");
-          if(this.freeBlk==first) System.out.print(" <-- ");
-          first = first.getNext();
-        }
-  
-        System.out.print("\nallocBlk is : ");
-        first = this.allocBlk.getFirst();
-        while(first!=null){
-          System.out.print(" ("+first.address+", "+first.size+", "+first.key+") ");
-          if(this.allocBlk==first) System.out.print(" <-- ");
-          first = first.getNext();
-        }
-        System.out.print("\n");
-      }
-
     // In A1, you need to implement the Allocate and Free functions for the class A1DynamicMem
     // Test your memory allocator thoroughly using Doubly Linked lists only (A1List.java).
 
@@ -48,28 +29,24 @@ public class A1DynamicMem extends DynamicMem {
         // System.out.println("Size:"+temp.size + "   Address:"+temp.address + "   Key:"+temp.key);
         if(temp!=null){
             if(temp.size==blockSize){
-                int x = temp.address;                
-                allocBlk.Insert(x, blockSize, x);
                 freeBlk.Delete(temp);
-                return x;
+                allocBlk.Insert(temp.address, temp.size, temp.address);
             }
             else{
-                int a = temp.address, s = temp.size, k = temp.key;
                 freeBlk.Delete(temp);
-                allocBlk.Insert(a, blockSize, a);
-                freeBlk.Insert(a+blockSize, s-blockSize, s-blockSize);                
-                return a;
+                allocBlk.Insert(temp.address, blockSize, temp.address);
+                freeBlk.Insert(temp.address+blockSize, temp.size-blockSize, temp.size-blockSize);                
             }
-            
+            return temp.address;
         }
         return -1;
     } 
     
     public int Free(int startAddr) {
         Dictionary temp = allocBlk.Find(startAddr, true);
-        if(temp!=null){            
-            freeBlk.Insert(temp.address, temp.size, temp.size);
+        if(temp!=null){
             allocBlk.Delete(temp);
+            freeBlk.Insert(temp.address, temp.size, temp.size);
             return 0;
         }
         return -1;
