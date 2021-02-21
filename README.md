@@ -1,4 +1,5 @@
-# COL106-Assignments
+# COL106-Assignments (Set of 4 Assignments) 
+## (Under Prof. Rahul Garg and Prof. Rijurekha Sen)
 ### 1st to 3rd Assignment is based on Dynamic Memory Allocation in our Systems
 * The repo comprise of 3 Assignments
 * 1st-Assignment -> Implementation using Doubly Linked List
@@ -21,7 +22,7 @@
 * For more information on Assignment 4 -> read PDF file
 
 #### More Testcases
-* I have uploaded 2 test cases with roughly 2 lakh and 8 lakh vertices.
+* I have uploaded 4 test cases with roughly 2 lakh and 8 lakh vertices.
 * These are dense graphs which might help you to test the correctness and time complexity of your code.
 * I have attached my outputs and the time taken to compute them in the avg_data1_data2.txt file. 
 * Also attached compare.py function, which might help to debug in case outputs doesn't match.
@@ -29,7 +30,8 @@
 * The edge file also contains multiple edges between nodes.
 * Replace "dfs2_prakhar.txt" ( FileOutputStream f = new FileOutputStream("dfs2_prakhar.txt") ) to the file name in which you want the output.
 
-##### P.S: Use java -Xss32m assignment4 command to avoid Stack Overflow error.
+##### P.S: Use java -Xss64m assignment4 command to avoid Stack Overflow error.(-Xss64m increases stack size)
 ##### Considering the input size of data2 (in drive), close other files to ensure that your code run smoothly and your pc doesn't hang
 #### Enjoy Coding :)
+
 
